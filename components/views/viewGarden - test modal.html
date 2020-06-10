@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html ng-app="angViewGardenApp">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>View Garden - Mini Garden</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link href="/fonts/font-awesome.min.css" rel="stylesheet">
+
+    <!-- CSS Files -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
+
+    <link href="/css/style.css" rel="stylesheet" />
+
+    <script src="/js/angular.min.js"></script>
+
+    <script src="/Chart.min.js"></script>
+    <script src="/angular-chart.min.js"></script>
+
+    <script src="/ngViewGarden.js"></script>
+
+    <!--script data-require="ui-bootstrap@*" data-semver="2.5.0" src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-2.5.0.js"></script-->
+    <script src="/ui-bootstrap-tpls-2.5.0.js"></script>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!--link data-require="bootstrap-css@3.*" data-semver="3.3.7" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css" /-->
+    <!--script data-require="angular.js@1.6.5" data-semver="1.6.5" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.min.js"></script>
+    <script data-require="angular-animate@1.6.*" data-semver="1.6.5" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular-animate.min.js"></script>
+    <script data-require="angular-touch@1.6.*" data-semver="1.6.2" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular-touch.js"></script>
+    <script data-require="ui-bootstrap@*" data-semver="2.5.0" src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-2.5.0.js"></script-->
+
+    <style type="text/css">
+        .modal-dialog {
+            width: 1000px;
+          }
+    </style>
+</head>
+
+<body class="">
+<div ng-controller="viewGardenController">
+    <div class="wrapper ">
+        <div class="sidebar" data-color="white" data-active-color="danger">
+            <!-- Logo -->
+            <div ng-include="'logo'"></div>
+
+            <!-- SideBar -->
+            <div ng-include="'sideBar'"></div>
+
+        </div>
+        <div class="main-panel">
+            <!-- Navbar -->
+            <div ng-include="'navbar'"></div>
+
+            <!-- Content -->
+            <div class="content">
+                <div class="row">
+                    view garden
+                    <button class="btn btn-info" ng-click="open()" style="margin: 15px;">Open Modal</button>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-header ">
+                                header
+                            </div>
+                            <div class="card-body ">
+                                body
+                            </div>
+                            <div class="card-footer ">
+                                <hr>
+                                footer
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End Content -->
+
+            <!-- Footer -->
+            <div ng-include="'footer'"></div>
+        </div>
+    </div>
+
+
+    <script type="text/ng-template" id="myModalContent.html">
+        <div>
+            <div class="modal-header">
+                <h3>Modal header</h3>
+            </div>
+            <div class="modal-body">
+                <h4>Just something random here</h4>
+                <h4>Just something random here</h4>
+                <h4>Just something random here</h4>
+
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">CANCEL</button>
+
+            </div>
+        </div>
+
+    </script>
+</div>
+</body>
+</html>

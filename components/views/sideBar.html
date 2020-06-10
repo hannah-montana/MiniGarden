@@ -1,0 +1,34 @@
+<div class="sidebar-wrapper">
+    <ul class="nav">
+        <li class="{{ activeDashboard }}">
+            <a href="/dashboard">
+                <i class="nc-icon nc-bank"></i>
+                <p>Dashboard</p>
+            </a>
+        </li>
+        <li class="{{ activeViewGarden }}">
+            <a href="/viewGarden">
+                <i class="nc-icon nc-album-2"></i>
+                <p>View Garden</p>
+            </a>
+        </li>
+        <li class="{{ activePlants }}">
+            <a href="/plants">
+                <i class="nc-icon nc-bullet-list-67"></i>
+                <p>Plants</p>
+            </a>
+        </li>
+        <li class="{{ activeUserProfile }}">
+            <a href="/userProfile">
+                <i class="nc-icon nc-single-02"></i>
+                <p>User Profile</p>
+            </a>
+        </li>
+        <li>
+            <a ng-click="signOut()">
+                <i class="nc-icon nc-button-power"></i>
+                <p>Sign out</p>
+            </a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html ng-app="angDashboardApp">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Dashboard - Mini Garden</title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
+    <link href="/fonts/font-awesome.min.css" rel="stylesheet">
+    <!-- CSS Files -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
+
+    <link href="/css/style.css" rel="stylesheet" />
+
+    <script src="/js/angular.min.js"></script>
+    <script src="/ngDashboard.js"></script>
+
+    <script src="/Chart.min.js"></script>
+    <script src="/angular-chart.min.js"></script>
+
+</head>
+
+<body class="">
+    <div ng-controller="DashboardController">
+        <div class="wrapper ">
+            <div class="sidebar" data-color="white" data-active-color="danger">
+                <!-- Logo -->
+                <div ng-include="'logo'"></div>
+
+                <!-- SideBar -->
+                <div ng-include="'sideBar'"></div>
+
+            </div>
+            <div class="main-panel">
+                <!-- Navbar -->
+                <div ng-include="'navbar'"></div>
+
+                <!-- Content -->
+                <div class="content">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5 col-md-4">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div class="numbers">
+                                                <p class="card-category">Humidity</p>
+                                                <p class="card-title">{{ humidity }} %<p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--div class="card-footer ">
+                                  <hr>
+                                  <div class="stats">
+                                    <i class="fa fa-refresh"></i>
+                                    Update Now
+                                  </div>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5 col-md-4">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-umbrella-13 text-success"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div class="numbers">
+                                                <p class="card-category">Soil moisture</p>
+                                                <p class="card-title">{{ avgSoilMoisture }} %<p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5 col-md-4">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-bulb-63 text-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div class="numbers">
+                                                <p class="card-category">Temperature</p>
+                                                <p class="card-title">27&deg;C<p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--div class="card-footer ">
+                                  <hr>
+                                  <div class="stats">
+                                    <i class="fa fa-clock-o"></i>
+                                    In the last hour
+                                  </div>
+                                </div-->
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-body ">
+                                    <div class="row">
+                                        <div class="col-5 col-md-4">
+                                            <div class="icon-big text-center icon-warning">
+                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-7 col-md-8">
+                                            <div class="numbers">
+                                                <p class="card-category">Water</p>
+                                                <p class="card-title">{{ avgWater }} ml<p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card ">
+                                <div class="card-header ">
+                                    <h5 class="card-title">Watering History</h5>
+                                    <!--span class="card-category">24 Hours performance</span-->
+                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <span class="card-category">
+                                        <a ng-click="showWaterHistory_Day()">Day</a>&emsp;
+                                        <a ng-click="showWaterHistory_Month()">Month</a>&emsp;
+                                        <a ng-click="showWaterHistory()">Year</a>
+                                    </span>
+                                </div>
+                                <div class="card-body ">
+                                    <canvas id="line" class="chart chart-line" chart-data="data"
+                                        chart-labels="labels" chart-series="series" chart-options="options"
+                                        chart-dataset-override="dataSetOverride" chart-click="onClick">
+                                    </canvas>
+                                </div>
+                                <div class="card-footer ">
+                                    <hr>
+                                    <div class="stats text-danger">
+                                        {{ messData }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- End Content -->
+
+                <!-- Footer -->
+                <div ng-include="'footer'"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
