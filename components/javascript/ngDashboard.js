@@ -21,8 +21,12 @@ dashboardApp.controller('DashboardController', function($scope, $http, $window){
     $scope.activeViewGarden = "";
     $scope.activePlants = "";
     $scope.activeUserProfile = "";
+    $scope.activeGardens = "";
 
     let userSignIn = $window.localStorage.getItem("username");
+    let userId = $window.localStorage.getItem("userId");
+
+    console.log('userid: ' + userId);
 
     $scope.humidity = '';
     $scope.avgSoilMoisture = '';

@@ -1,9 +1,4 @@
 module.exports = (app, db, CryptoJS) => {
-    /*app.post('/img', function(req, res) {
-        // send the angular app
-        res.setHeader('Content-Type', 'path');
-        res.sendFile( __dirname + '/img');
-    });*/
     /*======== CSS =========*/
     /*app.get('/bootstrap.css', function(req, res) {
         res.setHeader('Content-Type', 'text/css');
@@ -71,6 +66,12 @@ module.exports = (app, db, CryptoJS) => {
         res.sendFile( __dirname + '/javascript' + '/ngUserProfile.js');
     });
 
+    app.get('/ngGardens.js', function(req, res) {
+        // send the angular app
+        res.setHeader('Content-Type', 'application/javascript');
+        res.sendFile( __dirname + '/javascript' + '/ngGardens.js');
+    });
+
     /*=========== Main Menu ============*/
     app.get('/', function(req, res){
         res.setHeader('Content-Type', 'text/html');
@@ -115,6 +116,11 @@ module.exports = (app, db, CryptoJS) => {
     app.get('/userProfile', function(req, res){
         res.setHeader('Content-Type', 'text/html');
         res.sendFile(__dirname + '/views' + '/userProfile.html');
+    });
+
+    app.get('/gardens', function(req, res){
+        res.setHeader('Content-Type', 'text/html');
+        res.sendFile(__dirname + '/views' + '/gardens.html');
     });
 
     /*=========== USERS ============*/
@@ -241,15 +247,15 @@ module.exports = (app, db, CryptoJS) => {
         let values = [];
 
         if(req.body.id == 0){
-            sql = "INSERT INTO plants (name, photo, maxHeight, standardSoilMoisture, description)"
-                        + " VALUES (?, ?, ?, ?, ?)";
-            values = [req.body.name, req.body.photo, req.body.maxHeight, req.body.standardSoilMoisture, req.body.description];
+            sql = "INSERT INTO plants (name, photo, maxHeight, standardSoilMoisture, description, userId)"
+                        + " VALUES (?, ?, ?, ?, ?, ?)";
+            values = [req.body.name, req.body.photo, req.body.maxHeight, req.body.standardSoilMoisture, req.body.description, req.body.userId];
         }
         else {
             sql = "UPDATE plants"
-                + " SET name = ?, photo = ?, maxHeight = ?, standardSoilMoisture = ?, description = ?"
+                + " SET name = ?, photo = ?, maxHeight = ?, standardSoilMoisture = ?, description = ?, userId = ?"
                 + " WHERE id = ?"
-            values = [req.body.name, req.body.photo, req.body.maxHeight, req.body.standardSoilMoisture, req.body.description, req.body.id];
+            values = [req.body.name, req.body.photo, req.body.maxHeight, req.body.standardSoilMoisture, req.body.description, req.body.userId, req.body.id];
         }
 
         let processSQL = function(err, result){
@@ -272,6 +278,19 @@ module.exports = (app, db, CryptoJS) => {
             res.json({deleted: '1'});
         };
         db.query(sql, values, processSQL);
+    });
+
+
+    /*=== GARDENS ====*/
+    app.get('/getAllGardens', function(req, res){
+        let sql = "SELECT * FROM gardens";
+
+        let processSQL = function(err, result){
+            if (err) throw err;
+            res.json(result);
+        }
+
+        db.query(sql, processSQL);
     });
 
 };

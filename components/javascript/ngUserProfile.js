@@ -7,5 +7,14 @@ userProfileApp.controller('userProfileController', function($scope, $http, $wind
     $scope.activeViewGarden = "";
     $scope.activePlants = "";
     $scope.activeUserProfile = "active";
+    $scope.activeGardens = "";
 
+
+    /*=== SIGN OUT ===*/
+    $scope.signOut = function(){
+        $window.localStorage.removeItem("username");
+        $window.location.href = '/';
+    };
+
+    /*=== MAIN ===*/
 });

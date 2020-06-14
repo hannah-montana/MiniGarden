@@ -51,6 +51,7 @@ signInApp.controller('SignInController', function($scope, $http, $window){
             //console.log($scope.user);
             if($scope.user != null){
                 $window.localStorage.setItem("username", $scope.user.username);
+                $window.localStorage.setItem("userId", $scope.user.id);
                 $window.location.href = '/dashboard';
             }
             else

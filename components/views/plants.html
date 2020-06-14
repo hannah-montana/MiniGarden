@@ -13,18 +13,18 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
 
-    <link href="/css/style.css" rel="stylesheet" />
-
     <script src="/js/angular.min.js"></script>
 
     <script src="/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
     <script src="/ng-file-upload.min.js"></script>
 
     <script src="/ngPlants.js"></script>
-    <!--script data-require="ui-bootstrap@*" data-semver="2.5.0" src="https://cdn.rawgit.com/angular-ui/bootstrap/gh-pages/ui-bootstrap-tpls-2.5.0.js"></script-->
 
+    <!-- Modal -->
     <script src="/ui-bootstrap-tpls-2.5.0.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!-- Custom style-->
+    <link href="/css/style.css" rel="stylesheet" />
 
 </head>
 
@@ -45,77 +45,6 @@
 
             <!-- Content -->
             <div class="content">
-
-                <div class="row" id="addPlant">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <table width="100%">
-                                    <tr>
-                                        <td class="w-25 text-center">
-                                            <img ng-model="thumbnail" ngf-thumbnail="file_model || {{ 'imgSrc' }}"/>
-                                            <br><br>
-                                            <Single Image with validations></Single>
-                                                <input
-                                                        type="file"
-                                                        ngf-select
-                                                        ng-model="file_model"
-                                                        name="file_model"
-                                                        ngf-pattern="'image/*'"
-                                                        accept="image/*"
-                                                        ngf-max-size="20MB"
-                                                        id="btnFile"
-                                                />
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <div class="row">
-                                                <div class="col-md-6 pr-1">
-                                                    <div class="form-group">
-                                                        <label>Name</label>
-                                                        <input type="text" ng-model="name" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-
-                                                <div class="col-md-3 pr-1">
-                                                    <div class="form-group">
-                                                        <label>Max Height (cm)</label>
-                                                        <input type="number" min="10" ng-model="maxHeight" class="form-control">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 pr-1">
-                                                    <div class="form-group">
-                                                        <label>S. Soil Moisture</label>
-                                                        <input type="number" min="1" ng-model="standardSoilMoisture" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-9">
-                                                    <div class="form-group">
-                                                        <label>Description</label>
-                                                        <textarea ng-model="description" class="form-control"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-center">
-                                        </td>
-                                        <td></td>
-                                        <td>
-                                            <button type="button" class="btn btn-primary btn-round" ng-click="submit()" id="btnSave" >SAVE</button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
@@ -131,8 +60,7 @@
                             <div class="card-body">
                                 <input ng-model="searchText" class="form-control w-100" placeholder="Search a plant...">
 
-                                <div class="table-responsive">
-
+                                <div class="table-responsive" style="max-height: 600px">
                                     <table class="table">
                                         <thead class=" text-primary">
                                             <th>Photo</th>
@@ -171,12 +99,6 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <modal lolo="modal1" modal-body="body" modal-footer="footer" modal-header="header" data-ng-click-right-button="myRightButton()"></modal>
-                    <a href="#{{modal1}}" role="button" class="btn btn-success" data-toggle="modal">Launch Demo Modal</a>
-                </div>
-
-
             </div>
             <!-- End Content -->
 
@@ -185,8 +107,96 @@
         </div>
     </div>
 
-    <!--Modal-->
+    <!-- Modal Alert-->
+    <script type="text/ng-template" id="myModalContent.html">
+        <div>
+            <div class="modal-header">
+                <h5>{{ alertHeader }} !</h5>
+            </div>
+            <div class="modal-body">
+                <h5>{{ alertContent }}</h5>
+            </div>
+            <div class="modal-footer">
+                <button ng-show="showOK == true" class="btn btn-primary" id="m_btn_ok" ng-click="ok()">OK</button>
+                <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
+            </div>
+        </div>
+    </script>
 
+    <!-- Model add/view/edit plant -->
+    <script type="text/ng-template" id="plantModal.html">
+        <div>
+            <div class="modal-header">
+                <h5>{{ headerInfo }}</h5>
+            </div>
+            <div class="modal-body">
+                <table width="100%">
+                    <tr>
+                        <td class="w-25 text-center">
+                            <img ng-model="thumbnail" ngf-thumbnail="file_model || {{ 'imgSrc' }}"/>
+                            <br><br>
+                            <input
+                                    type="file"
+                                    ngf-select
+                                    ng-model="file_model"
+                                    name="file_model"
+                                    ngf-pattern="'image/*'"
+                                    accept="image/*"
+                                    ngf-max-size="20MB"
+                                    id="btnFile"
+                            />
+                        </td>
+                        <td>&nbsp;</td>
+                        <td>
+                            <div class="row">
+                                <div class="col-md-6 pr-1">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text" ng-model="name" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-3 pr-1">
+                                    <div class="form-group">
+                                        <label>Max Height (cm)</label>
+                                        <input type="number" min="10" ng-model="maxHeight" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-md-3 pr-1">
+                                    <div class="form-group">
+                                        <label>S. Soil Moisture</label>
+                                        <input type="number" min="1" ng-model="standardSoilMoisture" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>Description</label>
+                                        <textarea ng-model="description" class="form-control" rows="3"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="text-center">
+
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button ng-show="showSave == true" class="btn btn-primary" ng-click="plantSave()">SAVE</button>
+                <button ng-show="showClose == true" class="btn btn-warning" ng-click="plantClose()">CLOSE</button>
+            </div>
+        </div>
+    </script>
 
 </div>
 </body>

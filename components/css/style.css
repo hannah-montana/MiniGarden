@@ -2,3 +2,22 @@ a {
   cursor: pointer;
 }
 
+.modal-csm{
+   width:500px;
+}
+
+.modal-cmd{
+   width:700px;
+}
+
+.modal-clg{
+   width:900px;
+}
+
+.modal-xlg{
+   width:1200px;
+}
+
+textarea.form-control{
+    max-height: 300px;
+}
