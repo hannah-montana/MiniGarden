@@ -2,31 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1f78c6ec-c1cc-4927-97cf-97dc8b3fd61c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/components/javascript/ngGardens.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/views/gardens.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/components/css/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/demo/demo.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/demo/demo.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Mon Jun 08 2020.aloe vera.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Mon Jun 08 2020.bird's nest fern.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Mon Jun 08 2020.peace lily.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Mon Jun 08 2020.philodendron green.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Mon Jun 08 2020.rubber tree.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Tue Jun 09 2020.aloe vera.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Tue Jun 09 2020.bird's nest fern.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Tue Jun 09 2020.rubber tree.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/img/plants/Wed Jun 10 2020.bird's nest fern.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/javascript/ngDashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngDashboard.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/javascript/ngPlants.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngPlants.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/javascript/ngSignin.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngSignin.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/javascript/ngUserProfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngUserProfile.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/javascript/ngViewGarden.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngViewGarden.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/javascript/ngGardens.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/javascript/ngGardens.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/components/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/components/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/views/plants.html" beforeDir="false" afterPath="$PROJECT_DIR$/components/views/plants.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/views/sideBar.html" beforeDir="false" afterPath="$PROJECT_DIR$/components/views/sideBar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/views/viewGarden.html" beforeDir="false" afterPath="$PROJECT_DIR$/components/views/viewGarden.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/components/views/gardens.html" beforeDir="false" afterPath="$PROJECT_DIR$/components/views/gardens.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

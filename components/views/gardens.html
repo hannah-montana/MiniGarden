@@ -80,7 +80,7 @@
                                             <td>{{ garden.location }}</td>
                                             <td class="w-25">{{ garden.description }}</td>
                                             <td class="text-center">
-                                                <a ng-click="addPlants()"><img src="/img/icon/add-plant-32.png"></a>
+                                                <a ng-click="edit(garden)"><img src="/img/icon/add-plant-32.png"></a>
                                             </td>
                                             <td class="text-center">
                                                 <a ng-click="view(garden)"><img src="/img/icon/view-26-26.png"></a>
@@ -148,6 +148,7 @@
                 </div>
 
                 <div class="row">
+                    <!--List plants-->
                     <div class="col-sm-6 col-md-6">
                         <div>
                             <input ng-model="searchText" class="form-control w-100" placeholder="Search a plant...">
@@ -155,44 +156,76 @@
                             <div class="table-responsive" style="max-height: 500px">
                                 <table class="table">
                                     <thead class=" text-primary">
+                                        <th style="display: none">ID</th>
                                         <th>Photo</th>
                                         <th>Name</th>
-                                        <th>Max height</th>
+                                        <th>M. Height</th>
                                         <th>S.S.Moisture</th>
-                                        <th>Amount</th>
+                                        <th>Add</th>
+                                        <th>View</th>
                                     </thead>
                                     <tbody>
                                     <tr ng-repeat="plant in plants | filter:searchText">
+                                        <td style="display: none">{{ plant.id }}</td>
                                         <td class="w-25">
                                             <img src="{{ plant.photo }}">
                                         </td>
                                         <td>{{ plant.name }}</td>
                                         <td class="text-center">{{ plant.maxHeight }}</td>
                                         <td class="text-center">{{ plant.standardSoilMoisture }}</td>
-                                        <td><input type="number" class="form-control"></td>
+                                        <td>
+                                            <a ng-click="addPlants(plant)"><img src="/img/icon/add-22.png"></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a ng-click="view(plant)"><img src="/img/icon/view-26-26.png"></a>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-
                     </div>
+                    <!--List selected plants-->
                     <div class="col-sm-6 col-md-6">
                         <h6>Selected plants</h6>
-                    </div>
+                        <!--div class="row">
+                            <div class="col-sm-4 pr-1">
+                                <h6>Selected plants</h6>
 
-                </div>
+                            </div>
+                            <div class="col-sm-6 pr-1 w-100">
+                                <input ng-model="searchSelectedPlant" class="form-control" placeholder="Search a plant...">
+                            </div>
+                        </div-->
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-
+                        <div class="table-responsive" style="max-height: 500px">
+                            <table class="table">
+                                <thead class=" text-info">
+                                <th style="display: none">ID</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <th>Remove</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="selected in selectedPlants">
+                                    <td style="display: none">{{ selected.id }}</td>
+                                    <td class="w-25">
+                                        <img src="{{ selected.photo }}">
+                                    </td>
+                                    <td>{{ selected.name }}</td>
+                                    <td class="w-25">
+                                        <input type="number" class="form-control" min="1" value="{{ selected.amount }}" ng-change="changeAmount(selected, this)" ng-model="newAmount">
+                                    </td>
+                                    <td>
+                                        <a ng-click="removePlant(selected)"><img src="/img/icon/delete-22-22.png"></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6 pr-1">
+
 
                     </div>
                 </div>

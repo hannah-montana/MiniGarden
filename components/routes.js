@@ -280,7 +280,6 @@ module.exports = (app, db, CryptoJS) => {
         db.query(sql, values, processSQL);
     });
 
-
     /*=== GARDENS ====*/
     app.get('/getAllGardens', function(req, res){
         let sql = "SELECT * FROM gardens";
@@ -291,6 +290,55 @@ module.exports = (app, db, CryptoJS) => {
         }
 
         db.query(sql, processSQL);
+    });
+
+    app.post('/insertGarden', function(req, res){
+        let garden = { name: req.body.name,
+                       location: req.body.location,
+                       description: req.body.description,
+                       userId: req.body.userId};
+        let listPlants = req.body.listPlants;
+
+        let sql = "INSERT INTO gardens (name, location, description, userId) VALUES (?, ?, ?, ?)";
+        let values = [garden.name, garden.location, garden.description, garden.userId];
+
+        let processSQL = function(err, result){
+            if (err) throw err;
+
+            //insert list plants
+            if (result.insertId > 0){
+                for(var i=0; i<listPlants.length; i++){
+                    let subSql = "INSERT INTO garden_plants (gardenId, plantId, amount)"
+                            + " VALUES (?, ?, ?)";
+                    let subValues = [result.insertId, listPlants[i].plantId, listPlants[i].amount];
+
+                    let subProcessSQL = function(_err, _result){
+                        if (_err) throw _err;
+                    }
+                    db.query(subSql, subValues, subProcessSQL);
+                }
+            }
+
+            res.json(result.insertId); //insert successful
+        }
+        db.query(sql, values, processSQL);
+    });
+
+    app.post('/updateListPlants', function(req, res){
+        //console.log(req.body);
+        let data = req.body;
+
+        for(var i=0; i<data.length; i++){
+            let sql = "INSERT INTO garden_plants (gardenId, plantId, amount)"
+                    + " VALUES (?, ?, ?)";
+            let values = [data[i].gardenId, data[i].plantId, data[i].amount];
+
+            let processSQL = function(err, result){
+                if (err) throw err;
+                res.json(1);
+            }
+            db.query(sql, values, processSQL);
+        }
     });
 
 };

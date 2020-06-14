@@ -57,9 +57,11 @@ gardenApp.controller('gardenController', ['Upload', '$scope', '$http', '$uibModa
         });
         modalInstance.result.then(function(response){
             console.log(response);
+
+            /* view/edit/add */
             if(response != 'cancel'){
-                console.log(response);
                 //$scope.save(response);
+                $scope.getAllGardens();
             }
         });
     }
@@ -68,14 +70,21 @@ gardenApp.controller('gardenController', ['Upload', '$scope', '$http', '$uibModa
     $scope.getAllGardens();
 }]);
 
-gardenApp.controller('gardenCtrl', function(Upload, $scope, $http, $uibModalInstance, $uibModal, plant, action){
+gardenApp.controller('gardenCtrl', function(Upload, $scope, $http, $window, $uibModalInstance, $uibModal, plant, action){
     $scope.headerInfo = '';
 
     $scope.showSave = true;
     $scope.showClose = true;
 
+    $scope.userId = $window.localStorage.getItem("userId");
+
     let host = 'http://localhost:3010';
     let URL_ALL_PLANTS = host + '/getAllPlants';
+    let URL_INSERT_GARDEN = host + '/insertGarden';
+    let URL_UPDATE_LIST_PLANTS = host + '/updateListPlants';
+
+    $scope.selectedPlants = [];
+    $scope.garden = {};
 
     /*=== Get all plants ===*/
     $scope.getAllPlants = function(){
@@ -90,7 +99,44 @@ gardenApp.controller('gardenCtrl', function(Upload, $scope, $http, $uibModalInst
     }
 
     $scope.plantSave = function(){
+        //add new
+        if ($scope.garden != '{}'){
+            $scope.garden.name = $scope.name;
+            $scope.garden.location = $scope.location;
+            $scope.garden.description = $scope.description;
+            $scope.garden.userId = $scope.userId;
+
+            $scope.garden.listPlants = [];
+            for (var i=0; i < $scope.selectedPlants.length; i++){
+                let addPl = { plantId: $scope.selectedPlants[i].id,
+                                amount: $scope.selectedPlants[i].amount};
+                $scope.garden.listPlants.push(addPl);
+            }
+
+            $http.post(URL_INSERT_GARDEN, $scope.garden).then(function(response){
+                //insert successful
+                if(response.data > 0){
+                    console.log(response.data);
+                }
+            });
+        }
         $uibModalInstance.close('save');
+    }
+
+    $scope.addPlants = function(plant){
+        plant.amount = 1;
+        if ($scope.selectedPlants.indexOf(plant) == -1)
+            $scope.selectedPlants.push(plant);
+        //console.log($scope.selectedPlants);
+    }
+
+    $scope.changeAmount = function(plant, event){
+        plant.amount = event.newAmount;
+    }
+
+    $scope.removePlant = function(plant){
+        let index = $scope.selectedPlants.indexOf(plant);
+        $scope.selectedPlants.splice(index, 1);
     }
 
     /*=== MAIN ===*/
