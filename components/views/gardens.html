@@ -91,6 +91,7 @@
                                             <td class="text-center">
                                                 <a ng-click="delete(garden)"><img src="/img/icon/delete-22-22.png"></a>
                                             </td>
+
                                         </tr>
                                         </tbody>
                                     </table>
@@ -112,24 +113,7 @@
         </div>
     </div>
 
-    <!-- Modal Alert-->
-    <script type="text/ng-template" id="myModalContent.html">
-        <div>
-            <div class="modal-header">
-                <h5>{{ alertHeader }} !</h5>
-            </div>
-            <div class="modal-body">
-                <h5>{{ alertContent }}</h5>
-            </div>
-            <div class="modal-footer">
-                <button ng-show="showOK == true" class="btn btn-primary" id="m_btn_ok" ng-click="ok()">OK</button>
-                <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
-                <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
-            </div>
-        </div>
-    </script>
-
-    <!-- Model add/view/edit plant -->
+    <!-- Model add/view garden -->
     <script type="text/ng-template" id="gardenModal.html">
         <div>
             <div class="modal-header">
@@ -174,10 +158,10 @@
                                         <td class="text-center">{{ plant.maxHeight }}</td>
                                         <td class="text-center">{{ plant.standardSoilMoisture }}</td>
                                         <td>
-                                            <a ng-click="addPlants(plant)"><img src="/img/icon/add-22.png"></a>
+                                            <a ng-click="addPlants(plant)" ng-show="showSave == true"><img src="/img/icon/add-22.png"></a>
                                         </td>
                                         <td class="text-center">
-                                            <a ng-click="view(plant)"><img src="/img/icon/view-26-26.png"></a>
+                                            <a ng-click="viewPlant(plant)"><img src="/img/icon/view-26-26.png"></a>
                                         </td>
                                     </tr>
                                     </tbody>
@@ -188,15 +172,6 @@
                     <!--List selected plants-->
                     <div class="col-sm-6 col-md-6">
                         <h6>Selected plants</h6>
-                        <!--div class="row">
-                            <div class="col-sm-4 pr-1">
-                                <h6>Selected plants</h6>
-
-                            </div>
-                            <div class="col-sm-6 pr-1 w-100">
-                                <input ng-model="searchSelectedPlant" class="form-control" placeholder="Search a plant...">
-                            </div>
-                        </div-->
 
                         <div class="table-responsive" style="max-height: 500px">
                             <table class="table">
@@ -215,29 +190,183 @@
                                     </td>
                                     <td>{{ selected.name }}</td>
                                     <td class="w-25">
-                                        <input type="number" class="form-control" min="1" value="{{ selected.amount }}" ng-change="changeAmount(selected, this)" ng-model="newAmount">
+                                        <input type="number" ng-readonly="setReadOnly" class="form-control" min="1" value="{{ selected.amount }}" ng-change="changeAmount(selected, this)" ng-model="newAmount">
                                     </td>
                                     <td>
-                                        <a ng-click="removePlant(selected)"><img src="/img/icon/delete-22-22.png"></a>
+                                        <a ng-click="removePlant(selected)" ng-hide="hideDeleteBtn"><img src="/img/icon/delete-22-22.png"></a>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
-
-
-
                     </div>
                 </div>
 
             </div>
             <div class="modal-footer">
-                <button ng-show="showSave == true" class="btn btn-primary" ng-click="plantSave()">SAVE</button>
-                <button ng-show="showClose == true" class="btn btn-warning" ng-click="plantClose()">CLOSE</button>
+                <button ng-show="showSave == true" class="btn btn-primary" ng-click="gardenSave()">SAVE</button>
+                <button ng-show="showClose == true" class="btn btn-warning" ng-click="gardenClose()">CLOSE</button>
             </div>
         </div>
     </script>
 
+    <!-- Modal modify garden -->
+    <script type="text/ng-template" id="gardenEditModal.html">
+        <div>
+            <div class="modal-header">
+                <h5>{{ headerInfo }}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-4 pr-1 form-group">
+                        <input type="text" ng-model="name" class="form-control" placeholder="Name">
+                        <br>
+                        <input type="text" ng-model="location" class="form-control" placeholder="Location">
+                    </div>
+                    <div class="col-sm-8 col-md-8">
+                        <textarea ng-model="description" class="form-control" rows="3" placeholder="   Description..."></textarea>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!--List plants-->
+                    <div class="col-sm-6 col-md-6">
+                        <div>
+                            <input ng-model="searchText" class="form-control w-100" placeholder="Search a plant...">
+
+                            <div class="table-responsive" style="max-height: 500px">
+                                <table class="table">
+                                    <thead class=" text-primary">
+                                    <th style="display: none">ID</th>
+                                    <th>Photo</th>
+                                    <th>Name</th>
+                                    <th>M. Height</th>
+                                    <th>S.S.Moisture</th>
+                                    <th>Add</th>
+                                    <th>View</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="plant in plants | filter:searchText">
+                                        <td style="display: none">{{ plant.id }}</td>
+                                        <td class="w-25">
+                                            <img src="{{ plant.photo }}">
+                                        </td>
+                                        <td>{{ plant.name }}</td>
+                                        <td class="text-center">{{ plant.maxHeight }}</td>
+                                        <td class="text-center">{{ plant.standardSoilMoisture }}</td>
+                                        <td>
+                                            <a ng-click="m_addPlants(plant)"><img src="/img/icon/add-22.png"></a>
+                                        </td>
+                                        <td class="text-center">
+                                            <a ng-click="m_viewPlant(plant)"><img src="/img/icon/view-26-26.png"></a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--List selected plants-->
+                    <div class="col-sm-6 col-md-6">
+                        <h6>Selected plants</h6>
+
+                        <div class="table-responsive" style="max-height: 500px">
+                            <table class="table">
+                                <thead class=" text-info">
+                                <th style="display: none">ID</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Amount</th>
+                                <!--th></th-->
+                                <th>Remove</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="selected in selectedPlants">
+                                    <td style="display: none">{{ selected.id }}</td>
+                                    <td class="w-25">
+                                        <img src="{{ selected.photo }}">
+                                    </td>
+                                    <td>{{ selected.name }}</td>
+                                    <td class="w-25">
+                                        <input type="number" ng-readonly="setReadOnly" class="form-control" min="1" value="{{ selected.amount }}" ng-change="changeAmount(selected, this)" ng-model="newAmount">
+                                    </td>
+                                    <!--td>
+                                        <a ng-click="addAmount(selected)"><img src="/img/icon/add-black-18.png"></a>
+                                        <a ng-click="minusAmount(selected)"><img src="/img/icon/minus-18.png"></a>
+                                    </td-->
+                                    <td>
+                                        <a ng-click="m_removePlant(selected)" ng-hide="hideDeleteBtn"><img src="/img/icon/delete-22-22.png"></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button ng-show="showSave == true" class="btn btn-primary" ng-click="m_gardenSave()">SAVE</button>
+                <button ng-show="showClose == true" class="btn btn-warning" ng-click="m_gardenClose()">CLOSE</button>
+            </div>
+        </div>
+    </script>
+
+    <!-- Modal Alert-->
+    <script type="text/ng-template" id="myModalContent.html">
+        <div>
+            <div class="modal-header">
+                <h5>{{ alertHeader }} !</h5>
+            </div>
+            <div class="modal-body text-center">
+                <h5>{{ alertContent }}</h5>
+            </div>
+            <div class="modal-footer">
+                <button ng-show="showOK == true" class="btn btn-primary" id="m_btn_ok" ng-click="ok()">OK</button>
+                <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
+            </div>
+        </div>
+    </script>
+
+    <!-- Modal plant detail -->
+    <script type="text/ng-template" id="plantDetail.html">
+        <div>
+            <div class="modal-header">
+                <h5>Plant Information !</h5>
+            </div>
+            <div class="modal-body">
+                <table width="100%">
+                    <tr>
+                        <td class="w-25 text-center align-top" rowspan="4">
+                            <img ng-model="thumbnail" src="{{ plantPhoto }}"/>
+                        </td>
+                        <td>&nbsp;</td>
+                        <td style="width: 150px" class="font-weight-bold">Name:</td>
+                        <td>{{ plantName }}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="font-weight-bold">Max Height (cm):</td>
+                        <td>{{ plantMaxHeight }}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="font-weight-bold">S. Soil Moisture:</td>
+                        <td>{{ plantStandardSoilMoisture }}</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td class="font-weight-bold align-top">Description:</td>
+                        <td>{{ plantDescription }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" ng-click="cancel()">CLOSE</button>
+            </div>
+        </div>
+    </script>
 </div>
 </body>
 </html>

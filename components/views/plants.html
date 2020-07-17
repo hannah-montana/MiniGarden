@@ -113,7 +113,7 @@
             <div class="modal-header">
                 <h5>{{ alertHeader }} !</h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center">
                 <h5>{{ alertContent }}</h5>
             </div>
             <div class="modal-footer">
@@ -137,14 +137,14 @@
                             <img ng-model="thumbnail" ngf-thumbnail="file_model || {{ 'imgSrc' }}"/>
                             <br><br>
                             <input
-                                    type="file"
-                                    ngf-select
-                                    ng-model="file_model"
-                                    name="file_model"
-                                    ngf-pattern="'image/*'"
-                                    accept="image/*"
-                                    ngf-max-size="20MB"
-                                    id="btnFile"
+                                type="file"
+                                ngf-select
+                                ng-model="file_model"
+                                name="file_model"
+                                ngf-pattern="'image/*'"
+                                accept="image/*"
+                                ngf-max-size="20MB"
+                                id="btnFile"
                             />
                         </td>
                         <td>&nbsp;</td>

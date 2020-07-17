@@ -9,6 +9,10 @@ let bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+//execute python file
+let exec = require('child_process').exec;
+let {PythonShell} = require('python-shell');
+
 /*=== UPLOAD FILE ===*/
 //handle file upload in express app
 let multer = require('multer');
@@ -25,7 +29,6 @@ var storage = multer.diskStorage({ //multers disk storage settings
     filename: function (req, file, cb) {
         var datetimestamp = new Date().toDateString();
         cb(null, datetimestamp + '.' + file.originalname);
-        //cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.')[file.originalname.split('.').length -1])
     }
 });
 var upload = multer({ //multer settings
@@ -42,14 +45,40 @@ app.post('/upload', function(req, res) {
         res.json({error_code:0,err_desc:null});
     })
 });
+
+/* Upload profile photo */
+var storagePhoto = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './components/img/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+var uploadPhoto = multer({ //multer settings
+    storage: storagePhoto
+}).single('file');
+
+/** API path that will upload the files */
+app.post('/uploadPhoto', function(req, res) {
+    uploadPhoto(req,res,function(err){
+        if(err){
+             res.json({error_code:1,err_desc:err});
+             return;
+        }
+        res.json({error_code:0,err_desc:null});
+    })
+});
+/* end - Upload profile photo */
+
 /*=== END UPLOAD FILE ===*/
 
 //use for realtime
 let http = require('http');
 let server = http.Server(app);
-let io = require('socket.io')(server);
-
 server.listen(3010);
+
+let io = require('socket.io')(server);
 
 var publicDir = require('path').join(__dirname, '/components');
 app.use(express.static(publicDir));
@@ -72,6 +101,6 @@ db.connect((err) => {
 
 //load route
 let routes = require('./components/routes.js');
-routes(app, db, CryptoJS);
+routes(app, db, CryptoJS, exec, PythonShell, io);
 
 

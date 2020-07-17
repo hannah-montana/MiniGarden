@@ -57,7 +57,6 @@ plantsApp.controller('plantsController', ['Upload','$window', '$scope', '$http',
         };
         $scope.plantDialog(newPlant, 'add');
     };
-    $scope.e_name = "test";
 
     $scope.view = function(plant){
         $scope.plantDialog(plant, 'view');

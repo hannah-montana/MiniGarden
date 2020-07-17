@@ -52,7 +52,9 @@ signInApp.controller('SignInController', function($scope, $http, $window){
             if($scope.user != null){
                 $window.localStorage.setItem("username", $scope.user.username);
                 $window.localStorage.setItem("userId", $scope.user.id);
-                $window.location.href = '/dashboard';
+                $window.localStorage.setItem("userFullName", $scope.user.firstName + ' ' + $scope.user.lastName);
+                $window.localStorage.setItem("userPhoto", $scope.user.photo);
+                $window.location.href = '/viewGarden';
             }
             else
                 $scope.errorMess = "Your Username and Password is wrong!";

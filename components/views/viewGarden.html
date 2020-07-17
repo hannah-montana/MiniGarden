@@ -18,20 +18,35 @@
 
     <script src="/Chart.min.js"></script>
     <script src="/angular-chart.min.js"></script>
+    <script src="/angular-animate.js"></script>
+
+    <!--link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/angular_material/1.1.12/angular-material.min.css"-->
 
     <script src="/ngViewGarden.js"></script>
-
     <!-- Modal -->
     <script src="/ui-bootstrap-tpls-2.5.0.js"></script>
     <link href="/css/bootstrap.css" rel="stylesheet" />
     <!-- Custom style-->
+    <link rel="stylesheet" href="/css/jk-rating-stars.min.css" />
     <link href="/css/style.css" rel="stylesheet" />
 
-    <!--style type="text/css">
-        .modal-dialog {
-            width: 1000px;
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <script src="socket.io/socket.io.js"></script>
+
+    <script src="/js/jk-rating-stars.min.js"></script>
+    <!-- Chart -->
+    <!--script src="/chartist.min.js"></script-->
+    <style>
+        .selected {
+            background-color:#fcf4a3;
+            /*color:white;
+            font-weight:bold;*/
         }
-    </style-->
+        .hoverRow {
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body class="">
@@ -52,22 +67,397 @@
             <!-- Content -->
             <div class="content">
                 <div class="row">
-                    view garden
-                    <button class="btn btn-info" ng-click="open()" style="margin: 15px;">Open Modal</button>
+                    <div class="col-md-12">
+                        <div class="card ">
+                            <div class="card-body ">
+                                <h6>Choose Garden</h6>
+                                <select class="browser-default custom-select w-50" name="target" ng-model="listGardens.model" ng-change="selectedGarden()">
+                                    <option ng-repeat="garden in gardens" value="{{garden.owner}}:{{garden.id}}-{{garden.hostname}}#{{garden.running}}">{{ garden.name }}</option>
+                                </select>
+                                <br>
+                                <button class="btn btn-danger" ng-click="action()">Action <i class="fa fa-heartbeat"></i></button>
+                                <button class="btn btn-light" ng-click="statistic()">Statistic <i class="fa fa-bar-chart"></i></button>
+                                <button class="btn btn-info" ng-click="currentPhoto()">Current Photo <i class="fa fa-camera"></i></button>
+                                <button class="btn btn-warning" ng-click="viewGallery()">Gallery <i class="fa fa-picture-o"></i></button>
+                                <button class="btn btn-success" ng-click="videoStreaming()">Video Streaming <i class="fa fa-video-camera"></i></button>
+                                <button class="btn btn-danger" ng-click="setting()">Setting <i class="fa fa-cogs"></i></button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card ">
                             <div class="card-header ">
-                                header
+                                {{ cardHeader }}
+                                <span class="text-primary font-weight-bold">{{ loading }}</span>
+                                <button type="button" class="btn btn-outline-danger" ng-click="stopStreaming()" id="i_stop">Stop</button>
                             </div>
                             <div class="card-body ">
-                                body
-                            </div>
-                            <div class="card-footer ">
-                                <hr>
-                                footer
+                                <div id="i_action">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-primary" ng-show="flagStart == true" ng-click="startSystem()">Start</button>
+                                            <button class="btn btn-danger" ng-show="flagStop == true" ng-click="stopSystem()">Stop</button>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <span class="text-success font-weight-bold font-italic" style="vertical-align: -webkit-baseline-middle;">{{ mssSystem }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Sharing </label>
+                                                <a href="#" ng-click="editSharingPeople()" ng-show="flagOwner == true">Edit</a>
+
+                                                <div class="row" style="margin-left: 5px">
+                                                    <div class="avatar" style="margin-bottom: 0px; margin-right: 5px">
+                                                        <img uib-tooltip="{{userFullName}}" src="{{userPhoto}}" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+                                                    </div>
+                                                    <div class="avatar" style="margin-bottom: 0px; margin-right: 5px" ng-repeat="u in lstSharing">
+                                                        <img uib-tooltip="{{u.userFullName}}" src="{{u.photo}}" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+                                                    </div>
+                                                </div>                                                &nbsp;&nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Write your opinion</label>
+                                                <textarea class="form-control textarea" ng-model="comment">Oh</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Rate</label>
+                                                <jk-rating-stars rating="firstRate" shadow="false" reset-allowed="false"></jk-rating-stars>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <button class="btn btn-success" ng-click="addComment()">Comment</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="table-responsive" style="max-height: 400px">
+                                                <table class="table">
+                                                    <thead class=" text-primary">
+                                                    <th>User Name</th>
+                                                    <th>Comment</th>
+                                                    <th>Date</th>
+                                                    <th class="text-right">Rate</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="sharingHistory in sharingHistories">
+                                                        <td>{{sharingHistory.userFullName}}</td>
+                                                        <td>{{sharingHistory.comment}}</td>
+                                                        <td>{{sharingHistory.dateAction | date:"MM-dd-yyyy hh:mm:ss"}}</td>
+                                                        <td class="text-right">
+                                                            <div ng-bind-html="sharingHistory.rate"></div>
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="i_statistic">
+                                    <div class="row">
+                                        <div class="col-lg-3 col-md-6 col-sm-6">
+                                            <div class="card card-stats">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-5 col-md-4">
+                                                            <div class="icon-big text-center icon-warning">
+                                                                <i class="nc-icon nc-sun-fog-29 text-warning"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-7 col-md-8">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Humidity</p>
+                                                                <p class="card-title">{{ humidity }} %<p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-6">
+                                            <div class="card card-stats">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-5 col-md-4">
+                                                            <div class="icon-big text-center icon-warning">
+                                                                <i class="nc-icon nc-umbrella-13 text-success"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-7 col-md-8">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Soil moisture</p>
+                                                                <p class="card-title">{{ soilMoisture }} %<p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-6">
+                                            <div class="card card-stats">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-5 col-md-4">
+                                                            <div class="icon-big text-center icon-warning">
+                                                                <i class="nc-icon nc-bulb-63 text-danger"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-7 col-md-8">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Temperature</p>
+                                                                <p class="card-title">{{ temperature }}&deg;C<p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-md-6 col-sm-6">
+                                            <div class="card card-stats">
+                                                <div class="card-body ">
+                                                    <div class="row">
+                                                        <div class="col-5 col-md-4">
+                                                            <div class="icon-big text-center icon-warning">
+                                                                <i class="nc-icon nc-favourite-28 text-primary"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-7 col-md-8">
+                                                            <div class="numbers">
+                                                                <p class="card-category">Water</p>
+                                                                <p class="card-title">{{ water }} ml<p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Humidity</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_humidity" class="chart chart-bar"
+                                                            chart-data="data_humidity" chart-labels="labels_humidity" chart-series="series_humidity">
+                                                    </canvas>
+                                                </div>
+                                                <!--div class="card-footer">
+                                                    <div class="stats">
+                                                        <i class="nc-icon nc-refresh-69"></i>Refresh
+                                                    </div>
+                                                </div-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Soil Moisture</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_soilMoisture" class="chart chart-bar"
+                                                            chart-data="data_soilMoisture" chart-labels="labels_soilMoisture" chart-series="series_soilMoisture">
+                                                    </canvas>
+                                                </div>
+                                                <!--div class="card-footer">
+                                                    <div class="stats">
+                                                        <i class="nc-icon nc-refresh-69"></i>Refresh
+                                                    </div>
+                                                </div-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Temperature</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_temperature" class="chart chart-line"
+                                                            chart-data="data_temperature" chart-labels="labels_temperature" chart-series="series_temperature">
+                                                    </canvas>
+                                                </div>
+                                                <!--div class="card-footer">
+                                                    <div class="stats">
+                                                        <i class="nc-icon nc-refresh-69"></i>Refresh
+                                                    </div>
+                                                </div-->
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Water</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_water" class="chart chart-bar"
+                                                            chart-data="data_water" chart-labels="labels_water" chart-series="series_water">
+                                                    </canvas>
+                                                </div>
+                                                <!--div class="card-footer">
+                                                    <div class="stats">
+                                                        <i class="nc-icon nc-refresh-69"></i>Refresh
+                                                    </div>
+                                                </div-->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Type of Plants</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_type_of_plants" class="chart chart-pie"
+                                                            chart-data="data_type_of_plants" chart-labels="labels_type_of_plants">
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Soil Moisture of Plants</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_moisture_type_of_plants" class="chart chart-polar-area"
+                                                            chart-data="data_moisture_type_of_plants" chart-labels="labels_moisture_type_of_plants">
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="card card-chart">
+                                                <div class="card-header card-header-warning">
+                                                    <h6 class="card-title">Max Height of Plants</h6>
+                                                </div>
+                                                <div class="card-body">
+                                                    <canvas id="c_max_height_type_of_plants" class="chart chart-bar"
+                                                            chart-data="data_max_height_type_of_plants" chart-labels="labels_max_height_type_of_plants">
+                                                    </canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="i_currentPhoto">
+                                    <img class="img-fluid" ng-src="{{imgCurrentPhoto}}"/>
+                                </div>
+
+                                <div id="i_gallery">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            From
+                                            <input type="date" class="form_datetime" ng-model="from">
+
+                                            To
+                                            <input type="date" ng-model="to">
+
+                                            <button class="btn btn-primary" ng-click="filterPhotos()">Filter</button>
+                                            <button class="btn btn-info" ng-click="allPhotos()">All Photos</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4" ng-repeat="photo in photos">
+                                            <div class="text-center">
+                                                <a href="/img/gardens/{{photo.photo}}" target="_blank">
+                                                    <img src="/img/gardens/{{photo.photo}}">
+                                                    <label>
+                                                        {{photo.dateAction | date:"MM-dd-yyyy"}}
+                                                    </label>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="i_videoStreaming">
+                                    <img id="liveImg">
+                                </div>
+
+                                <div id="i_setting">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="text-warning font-weight-bold">CAPTURE PHOTO</span><br>
+                                            Time regularly: <br>
+                                            <!--select class="browser-default custom-select w-50" name="target" ng-model="listGardens.model" ng-change="selectedGarden()">
+                                                <option ng-repeat="garden in gardens" value="{{garden.owner}}:{{garden.id}}-{{garden.hostname}}#{{garden.running}}">{{ garden.name }}</option>
+                                            </select-->
+                                            <select class="browser-default custom-select w-25" name="target" ng-model="modelTimeCapture">
+                                                <option ng-repeat="timeCapture in timeCaptures" value="{{timeCapture.value}}" ng-selected="modelTimeCapture==timeCapture.value">{{ timeCapture.name }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">&nbsp;</div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <span class="text-primary font-weight-bold">WATERING METHOD</span><br>
+                                        </div>
+                                    </div>
+                                    <label>
+                                        <input type="radio" ng-model="setWater" value="byTime" ng-change="changeSetting(setWater)" ng-checked="rbt_time">
+                                        By Time
+                                    </label><br/>
+                                    <label>
+                                        <input type="radio" ng-model="setWater" value="bySensor" ng-change="changeSetting(setWater)" ng-checked="rbt_sensor">
+                                        By Sensor
+                                    </label>
+
+                                    <div id="i_time">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                Number of days: <br>
+                                                <select class="browser-default custom-select w-25" name="target" ng-model="modelNumDay">
+                                                    <option ng-repeat="numDay in numDays" value="{{numDay.value}}" ng-selected="modelNumDay==numDay.value">{{ numDay.name }}</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                Time for watering: <br>
+                                                <select class="browser-default custom-select w-25" name="target" ng-model="modelTimeWater">
+                                                    <option ng-repeat="timeWater in timeWaters" value="{{timeWater.value}}" ng-selected="modelTimeWater==timeWater.value">{{ timeWater.name }}</option>
+                                                </select>
+                                                <!--select class="browser-default custom-select w-25" name="timeWater">
+                                                    <option value="5">5 seconds</option>
+                                                    <option value="10">10 seconds</option>
+                                                    <option value="30">30 seconds</option>
+                                                    <option value="60">1 minutes</option>
+                                                    <option value="180">3 minutes</option>
+                                                    <option value="300">5 minutes</option>
+                                                    <option value="600">10 minutes</option>
+                                                    <option value="900">15 minutes</option>
+                                                    <option value="1200">20 minutes</option>
+                                                </select-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="i_sensor">
+                                        <span class="font-italic">*** System will calculate the soil moisture and watering if needed </span>
+                                    </div>
+                                    <br>
+                                    <input type="button" class="btn btn-success" value="SAVE" ng-click="saveSetting()">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -81,26 +471,102 @@
         </div>
     </div>
 
-
+    <!-- Modal Alert-->
     <script type="text/ng-template" id="myModalContent.html">
         <div>
             <div class="modal-header">
-                <h3>Modal header</h3>
+                <h5>{{ alertHeader }} !</h5>
             </div>
-            <div class="modal-body">
-                <h4>Just something random here</h4>
-                <h4>Just something random here</h4>
-                <h4>Just something random here</h4>
-
-
+            <div class="modal-body text-center">
+                <h5>{{ alertContent }}</h5>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" ng-click="ok()">OK</button>
-                <button class="btn btn-warning" ng-click="cancel()">CANCEL</button>
-
+                <button ng-show="showOK == true" class="btn btn-primary" id="m_btn_ok" ng-click="ok()">OK</button>
+                <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
             </div>
         </div>
+    </script>
 
+    <!-- Modal Edit share user-->
+    <script type="text/ng-template" id="myModalSharing.html">
+        <div>
+            <div class="modal-header">
+                <h5>{{ alertHeader }}</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        Garden: <b>Arsenal</b> <br>
+                        Instruction: <br>
+                        - Add user to take care this garden from the left to the right table. <br>
+                        - Remove users from the right table if they will not take care this garden anymore. <br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-5">
+                        <input ng-model="searchText" class="form-control w-100" placeholder="Search a user...">
+                        <div class="table-responsive" style="height: 400px; border:solid thin lightgrey">
+                            <table class="table hoverRow">
+                                <thead class=" text-primary">
+                                <th style="display: none">ID</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="share in lstNotSharing  | filter:searchText" ng-class="{'selected':$index == selectedLeft}" ng-click="setClickedLeft($index, share)">
+                                    <td style="display: none">{{ share.id }}</td>
+                                    <td style="height: 20px; width: 20px">
+                                        <img src="{{ share.photo }}">
+                                    </td>
+                                    <td>{{ share.userFullName }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1" style="padding-top:150px; vertical-align: middle; text-align: center;">
+                        <button ng-show="showAddShare == true" class="btn btn-primary" ng-click="leftToRight()"> >> </button>
+                        <button ng-show="showRemoveShare == true" class="btn btn-warning" ng-click="rightToLeft()"> << </button>
+                    </div>
+
+                    <div class="col-md-6">
+                        <h6>Current Sharing</h6>
+                        <div class="table-responsive" style="height: 400px; border:solid thin lightgrey">
+                            <table class="table hoverRow">
+                                <thead class=" text-primary">
+                                <th style="display: none">ID</th>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Owner</th>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="share in lstSharing" ng-class="{'selected':$index == selectedRight}" ng-click="setClickedRight($index, share)">
+                                    <td style="display: none">{{ share.id }}</td>
+                                    <td style="height: 20px; width: 20px">
+                                        <img src="{{ share.photo }}">
+                                    </td>
+                                    <td>{{ share.userFullName }}</td>
+                                    <td>{{ share.owner == '1' ? 'Yes': 'No'}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <span class="text-italic text-warning">
+                            <em>
+                                *Note: cannot remove owner
+                            </em>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-show="showOK == true" class="btn btn-success" id="btn_ok" ng-click="ok()">SAVE</button>
+                <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CANCEL</button>
+            </div>
+        </div>
     </script>
 </div>
 </body>

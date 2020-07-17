@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <title>Dashboard - Mini Garden</title>
+    <title>User Profile - Mini Garden</title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
@@ -13,14 +13,21 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet" />
     <link href="/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
 
-    <link href="/css/style.css" rel="stylesheet" />
-
     <script src="/js/angular.min.js"></script>
+
+    <script src="/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+    <script src="/ng-file-upload.min.js"></script>
 
     <script src="/Chart.min.js"></script>
     <script src="/angular-chart.min.js"></script>
 
     <script src="/ngUserProfile.js"></script>
+
+    <!-- Modal -->
+    <script src="/ui-bootstrap-tpls-2.5.0.js"></script>
+    <link href="/css/bootstrap.css" rel="stylesheet" />
+    <!-- Custom style-->
+    <link href="/css/style.css" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -41,31 +48,251 @@
             <!-- Content -->
             <div class="content">
                 <div class="row">
-                    user profile
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card ">
-                            <div class="card-header ">
-                                header
+                    <div class="col-md-4">
+                        <div class="card card-user">
+                            <div class="image">
+                                <img src="/img/3.jpg" alt="...">
                             </div>
-                            <div class="card-body ">
-                                body
+                            <div class="card-body">
+                                <div class="author">
+                                    <a href="#" ng-click="clickOnUpload()">
+                                        <!--img class="avatar border-gray" src="{{photo}}" alt="..."-->
+                                        <img class="avatar border-gray" ng-model="thumbnail" ngf-thumbnail="file_model || {{ 'photo' }}"/>
+                                        <h5 class="title">Binh Nguyen</h5>
+                                    </a>
+                                    <p class="description">
+                                        @{{ username }}
+                                    </p>
+                                </div>
+                                <p class="description text-center">
+                                    {{ description }}
+                                </p>
                             </div>
-                            <div class="card-footer ">
+                            <div class="card-footer">
                                 <hr>
-                                footer
+                                <div class="button-container">
+                                    <div class="row">
+                                        <!--div class="col-lg-3 col-md-6 col-6 ml-auto mr-auto">
+                                            <h5>2<br><small>Gardens</small></h5>
+                                        </div-->
+                                        <div class="col-lg-4 col-md-6 col-6 ml-auto mr-auto">
+                                            <h5>{{ numGarden }}<br><small>Gardens</small></h5>
+                                        </div>
+                                        <div class="col-lg-3 ml-auto mr-auto">
+                                            <h5>{{ numPeople }}<br><small>People</small></h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Gardens</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="w-100">
+                                    <tr ng-repeat="share in gardenSharing">
+                                        <td class="w-25"><span class="text-success">{{share.gardenName}}</span></td>
+                                        <td class="w-50">
+                                            <div class="row" style="margin-left: 10px">
+                                                <div class="avatar" style="margin-bottom: 0px; margin-right: 5px" ng-repeat="u in share.lstSharing">
+                                                    <img uib-tooltip="{{u.userFullName}}" src="{{u.photo}}" alt="Circle Image" class="img-circle img-no-padding img-responsive">
+                                                </div>&nbsp;
+                                            </div>
+                                        </td>
+                                        <td class="w25 text-right">
+                                            <btn class="btn btn-sm btn-outline-success btn-round btn-icon" ng-click="openShare(share.gardenId)">
+                                                <i class="fa fa-hand-o-right"></i>
+                                            </btn>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card card-user">
+                            <div class="card-header">
+                                <h5 class="card-title">Edit Profile</h5>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-4 pr-1">
+                                            <div class="form-group">
+                                                <label>Username</label>
+                                                <input type="text" class="form-control" ng-model="username">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 px-1">
+                                            <div class="form-group">
+                                                <label>Password</label>
+                                                <input type="password" class="form-control" ng-model="password" placeholder="Password">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5 pl-1">
+                                            <div class="form-group">
+                                                <label>Email address</label>
+                                                <input type="email" class="form-control" ng-model="email" placeholder="Email">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 pr-1">
+                                            <div class="form-group">
+                                                <label>First Name</label>
+                                                <input type="text" class="form-control" ng-model="firstName" placeholder="First Name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 pl-1">
+                                            <div class="form-group">
+                                                <label>Last Name</label>
+                                                <input type="text" class="form-control" ng-model="lastName" placeholder="Last Name">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Address</label>
+                                                <input type="text" class="form-control" ng-model="address" placeholder="Home Address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4 pr-1">
+                                            <div class="form-group">
+                                                <label>City</label>
+                                                <input type="text" class="form-control" ng-model="city" placeholder="City">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 px-1">
+                                            <div class="form-group">
+                                                <label>Country</label>
+                                                <input type="text" class="form-control" ng-model="country" placeholder="Country">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 pl-1">
+                                            <div class="form-group">
+                                                <label>Postal Code</label>
+                                                <input type="text" class="form-control" ng-model="zipcode" placeholder="ZIP Code">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>About Me</label>
+                                                <textarea class="form-control textarea" ng-model="description"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input
+                                                type="file"
+                                                ngf-select
+                                                ng-model="file_model"
+                                                name="file_model"
+                                                ngf-pattern="'image/*'"
+                                                accept="image/*"
+                                                ngf-max-size="20MB"
+                                                id="btnFile"
+                                                ng-show="false"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="update ml-auto mr-auto">
+                                            <button type="button" class="btn btn-primary btn-round" ng-click="update()">Update Profile</button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
             <!-- End Content -->
 
             <!-- Footer -->
             <div ng-include="'footer'"></div>
+
+            <!-- Modal Alert-->
+            <script type="text/ng-template" id="myModalContent.html">
+                <div>
+                    <div class="modal-header">
+                        <h5>{{ alertHeader }} !</h5>
+                    </div>
+                    <div class="modal-body text-center">
+                        <h5>{{ alertContent }}</h5>
+                    </div>
+                    <div class="modal-footer">
+                        <button ng-show="showOK == true" class="btn btn-primary" id="m_btn_ok" ng-click="ok()">OK</button>
+                        <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                        <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
+                    </div>
+                </div>
+            </script>
+
+            <!-- Modal Sharing -->
+            <script type="text/ng-template" id="myModalSharing.html">
+                <div>
+                    <div class="modal-header">
+                        <h5>{{ alertHeader }}</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span style="font-size: 16px">Garden: </span>
+                                <span style="font-size: 16px" class="font-weight-bold">{{generalInfo.gardenName}}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <span style="font-size: 16px">Number of plants: </span>
+                                <span style="font-size: 16px" class="font-weight-bold">{{generalInfo.plantAmount}}</span>
+                            </div>
+                            <div class="col-md-6">
+                                <span style="font-size: 16px">Avg. Standard Soil Moisture: </span>
+                                <span style="font-size: 16px" class="font-weight-bold">{{generalInfo.avgSoilMoisture}}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive" style="max-height: 500px">
+                                    <table class="table">
+                                        <thead class=" text-primary">
+                                        <th>User Name</th>
+                                        <th>Comment</th>
+                                        <th>Date</th>
+                                        <th class="text-right">Rate</th>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="sharingHistory in sharingHistories">
+                                            <td>{{sharingHistory.userFullName}}</td>
+                                            <td>{{sharingHistory.comment}}</td>
+                                            <td>{{sharingHistory.dateAction | date:"MM-dd-yyyy hh:mm:ss"}}</td>
+                                            <td class="text-right">
+                                                <div ng-bind-html="sharingHistory.rate"></div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button ng-show="showOK == true" class="btn btn-primary" id="btn_ok" ng-click="ok()">OK</button>
+                        <button ng-show="showConfirmDelete == true" class="btn btn-danger" ng-click="delete()">DELETE</button>
+                        <button ng-show="showCancel == true" class="btn btn-warning" ng-click="cancel()">CLOSE</button>
+                    </div>
+                </div>
+            </script>
         </div>
     </div>
 </div>
